@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+np.random.seed(99)
 coords_x1 = np.random.normal(0, 0.5, 100)
 coords_x2 = np.random.normal(0, 0.5, 100)
 dx, dy = np.random.uniform(-0.4, 0.4, 2)
