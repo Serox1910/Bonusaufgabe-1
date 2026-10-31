@@ -1,14 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Random Seed festlegen, damit die Ergebnisse reproduzierbar sind
 np.random.seed(99)
+
 coords_x1 = np.random.normal(0, 0.5, 100)
 coords_x2 = np.random.normal(0, 0.5, 100)
 dx, dy = np.random.uniform(-0.4, 0.4, 2)
 class_y = (((coords_x1 - dx)**2 + (coords_x2 - dy)**2) < 0.4)
 
-class_y = np.where(class_y, 1, -1)
-
+# class y von True/False in 1 und -1 umwandeln
+class_y = class_y.astype(int) * 2 - 1
 
 
 c = list(map(lambda x: 'r' if x == 1 else 'b', class_y))
@@ -17,15 +19,23 @@ plt.xlabel('x1')
 plt.ylabel('x2')
 #plt.show()
 
+# Design Matrix X erstellen, die die Features für die lineare Regression enthält
 X = np.stack([np.ones_like(coords_x1), coords_x1, coords_x2, coords_x1**2 , coords_x2**2 , coords_x1*coords_x2 ], axis= 1)
+
+# Omega-Gewichte berechnen
 w = np.linalg.inv(X.T @ X) @ X.T @ class_y
 print(X)
 print(w)
 
+# Rauschen zum Gewicht hinzufügen
 w += np.random.uniform(-1.5 , 1.5, w.shape)
+
+# Vorhersage der Klasse für die Trainingsdaten
 pred_y = X @ w
 print(pred_y)
 
+
+# Plotten der Ergebnisse
 fig = plt.figure()
 ax = fig.add_subplot(projection="3d")
 ax.scatter(coords_x1, coords_x2, pred_y, c=c)
