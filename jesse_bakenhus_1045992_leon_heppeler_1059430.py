@@ -66,12 +66,17 @@ logistische Klassifikation
 y = class_y.astype(int)
 
 # Klassenzugehörigkeitswahrscheinlichkeiten
-q = 1 / (1 + np.exp(-pred_y))
+def sigmoid(y):
+    return 1 / (1 + np.exp(-y))
+
+q = sigmoid(pred_y)
 
 print((q > 0.5) == y)
 
-# ! erstmal testen
-L = np.prod((q ** y) * (1 - q)**(1-y))
+def likehood(q, y):
+    return np.prod((q ** y) * (1 - q)**(1-y))
+
+L = likehood(q, y)
 
 print(L)
 
@@ -85,10 +90,10 @@ print(log_L)
 
 lernrate = 0.005
 
-def log_likelihood_gradienten_berechnen(X, w):
+def aufstieg(X, w):
 
     pred_y = X @ w
-    q = 1 / (1 + np.exp(-pred_y))
+    q = sigmoid(pred_y)
 
     gradient = X.T @ (y - q)
 
@@ -99,7 +104,7 @@ plt.ion()
 for i in range(0, 1000):
 
     # jeden Durchgang den Gradientenaufstieg berechnen
-    w = log_likelihood_gradienten_berechnen(X, w)
+    w = aufstieg(X, w)
     print(f"{i+1}. {w}")
 
     # Iteration plotten
